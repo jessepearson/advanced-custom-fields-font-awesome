@@ -24,19 +24,20 @@ class acf_field_font_awesome extends acf_field {
 		$this->label = __('Font Awesome Icon');
 		$this->category = __("Content",'acf'); // Basic, Content, Choice, etc
 		$this->defaults = array(
-			'enqueue_fa' 	=>	0,
-			'allow_null' 	=>	0,
-			'save_format'	=>  'element',
-			'default_value'	=>	'',
+			'enqueue_fa' 		=>	0,
+			'allow_null' 		=>	0,
+			'live_preview_style'	=>	'large',
+			'save_format'		=>  'element',
+			'default_value'		=>	'',
 			'fa_live_preview'	=>	'',
-			'choices'		=>	$this->get_icons()
+			'choices'			=>	$this->get_icons()
 		);
 		$this->l10n = array();
 
 		$this->settings = array(
-			'path' => dirname(__FILE__),
-			'dir' => $this->helpers_get_dir( __FILE__ ),
-			'version' => '1.5'
+			'path' 		=> dirname(__FILE__),
+			'dir' 		=> $this->helpers_get_dir( __FILE__ ),
+			'version' 	=> '1.5'
 		);
 
 		add_filter('acf/load_field', array( $this, 'maybe_enqueue_font_awesome' ) );
@@ -151,6 +152,18 @@ class acf_field_font_awesome extends acf_field {
 		));
 
 		acf_render_field_setting( $field, array(
+			'label'			=> __('Live Preview Style','acf-font-awesome'),
+			'instructions'	=> 'Choose the size of the icon for live preview, or disable it altogether.',
+			'type'			=> 'radio',
+			'name'			=> 'live_preview_style',
+			'choices'	=>	array(
+				'large'	=>	__('Large','acf-font-awesome'),
+				'small'	=>	__('Small','acf-font-awesome'),
+				'off'	=>	__('Disabled','acf-font-awesome'),
+			)
+		));
+
+		acf_render_field_setting( $field, array(
 			'label'			=> __('Return Value','acf-font-awesome'),
 			'instructions'	=> __('Specify the returned value on front end','acf-font-awesome'),
 			'type'			=> 'radio',
@@ -205,6 +218,8 @@ class acf_field_font_awesome extends acf_field {
 	function render_field( $field )
 	{
 
+		wpsd_log( $field, '$field' );
+
 		if( 'object' == $field['save_format'] && is_object( $field['save_format'] ) && 'null' !== $field['value'] )
 			$field['value'] = array( $field['value']->class );
 
@@ -228,7 +243,23 @@ class acf_field_font_awesome extends acf_field {
 		
 		// html
 		echo '<div class="fa-field-wrapper">';
-		echo '<div class="fa-live-preview"></div>';
+
+		// Which live preview?
+		if( ! isset( $field['live_preview_style'] ) || 'large' == $field['live_preview_style'] ) {
+
+			// default
+			echo '<div class="fa-live-preview"></div>';
+
+		} elseif( 'small' == $field['live_preview_style'] ) {
+
+			// small
+			echo '<div class="fa-live-preview small"></div>';
+
+		} elseif( 'off' == $field['live_preview_style'] ) {
+			// do nothing
+		}
+
+		// add the select element
 		echo '<select id="' . $field['id'] . '" class="' . $field['class'] . ' fa-select2-field" name="' . $field['name'] . '" >';	
 		
 		// null

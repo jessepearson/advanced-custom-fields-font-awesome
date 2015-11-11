@@ -3,6 +3,11 @@
   padding: 10px;
 }
 
+.fa-live-preview.small {
+  font-size: 16px;
+  padding: 7px;
+}
+
 [data-name="fa_live_preview"] i {
   font-size: 50px;
 }

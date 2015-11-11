@@ -42,6 +42,8 @@ This ACF field type is compatible with:
 
 = 1.7.2 =
 * Bugfix PHP Notice when trying to access property of 'null' value
+* Bugfix PHP Notice when trying to access property of non-object value
+* Added ability to choose Large or Small live preview, or disable completely
 
 = 1.7.1 =
 * Updated Better Font Awesome Library for better compatibility with Better Font Awesome plugin

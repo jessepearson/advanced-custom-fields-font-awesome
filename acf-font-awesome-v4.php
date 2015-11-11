@@ -25,15 +25,16 @@ class acf_field_font_awesome extends acf_field
 		$this->defaults = array(
 			'enqueue_fa' 	=>	0,
 			'allow_null' 	=>	0,
+			'live_preview_style' 	=>	'large',
 			'save_format'	=>  'element',
 			'default_value'	=>	'',
 			'choices'		=>	$this->get_icons()
 		);
 
 		$this->settings = array(
-			'path' => apply_filters('acf/helpers/get_path', __FILE__),
-			'dir' => apply_filters('acf/helpers/get_dir', __FILE__),
-			'version' => '1.5'
+			'path' 		=> apply_filters('acf/helpers/get_path', __FILE__),
+			'dir' 		=> apply_filters('acf/helpers/get_dir', __FILE__),
+			'version' 	=> '1.5'
 		);
 
 		add_filter('acf/load_field', array( $this, 'maybe_enqueue_font_awesome' ) );
@@ -134,6 +135,29 @@ class acf_field_font_awesome extends acf_field
 				</div>
 			</td>
 		</tr>
+
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e("Live Preview Style",'acf'); ?></label>
+				<p class="description"><?php _e("Choose the size of the icon for live preview, or disable it altogether.", 'acf'); ?></p>
+			</td>
+			<td>
+				<?php 
+				do_action('acf/create_field', array(
+					'type'	=>	'radio',
+					'name'	=>	'fields['.$key.'][live_preview_style]',
+					'value'	=>	$field['live_preview_style'],
+					'choices'	=>	array(
+						'large'	=>	__('Large','acf-font-awesome'),
+						'small'	=>	__('Small','acf-font-awesome'),
+						'off'	=>	__('Disabled','acf-font-awesome'),
+					),
+					'layout'	=>	'horizontal',
+				));
+				?>
+			</td>
+		</tr>
+
 		<tr class="field_option field_option_<?php echo $this->name; ?>">
 			<td class="label">
 				<label><?php _e("Return Value",'acf'); ?></label>
@@ -215,7 +239,7 @@ class acf_field_font_awesome extends acf_field
 
 	function create_field( $field )
 	{
-		if( 'object' == $field['save_format'] && 'null' !== $field['value'] )
+		if( 'object' == $field['save_format'] && is_object( $field['save_format'] ) && 'null' !== $field['value'] )
 			$field['value'] = array( $field['value']->class );
 
 		// value must be array
@@ -238,7 +262,23 @@ class acf_field_font_awesome extends acf_field
 		
 		// html
 		echo '<div class="fa-field-wrapper">';
-		echo '<div class="fa-live-preview"></div>';
+
+		// Which live preview?
+		if( ! isset( $field['live_preview_style'] ) || 'large' == $field['live_preview_style'] ) {
+
+			// default
+			echo '<div class="fa-live-preview"></div>';
+
+		} elseif( 'small' == $field['live_preview_style'] ) {
+
+			// small
+			echo '<div class="fa-live-preview small"></div>';
+
+		} elseif( 'off' == $field['live_preview_style'] ) {
+			// do nothing
+		}
+
+		// add the select element
 		echo '<select id="' . $field['id'] . '" class="' . $field['class'] . ' fa-select2-field" name="' . $field['name'] . '" >';	
 		
 		// null
