@@ -1,5 +1,5 @@
 === Advanced Custom Fields: Font Awesome ===
-Contributors: mattkeys
+Contributors: mattkeys, jessepearson
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UTNU7YJG2KVPJ
 Tags: Advanced Custom Fields, ACF, Font Awesome, FontAwesome
 Requires at least: 3.5
